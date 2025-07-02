@@ -1,35 +1,41 @@
 services:
   ldap:
-    image: dcm4che/slapd-dcm4chee:2.6.3-29.0
+    image: dcm4che/slapd-dcm4chee:2.6.7-33.1
     logging:
       driver: json-file
       options:
         max-size: "10m"
     ports:
       - "389:389"
+    security_opt:
+     - seccomp:unconfined
     env_file: docker-compose.env
     volumes:
-      - ~/dcm4chee-arc/ldap:/var/lib/ldap
-      - ~/dcm4chee-arc/slapd.d:/etc/ldap/slapd.d
+      - C:/dcm4chee/dcm4chee-arc/ldap:/var/lib/openldap/openldap-data
+      - C:/dcm4chee/dcm4chee-arc/slapd.d:/etc/openldap/slapd.d
   db:
-    image: dcm4che/postgres-dcm4chee:14.5-29
+    image: dcm4che/postgres-dcm4chee:17.1-33
     logging:
       driver: json-file
       options:
         max-size: "10m"
+    security_opt:
+     - seccomp:unconfined
     ports:
       - "5432:5432"
     env_file: docker-compose.env
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-      - ~/dcm4chee-arc/db:/var/lib/postgresql/data
+      - /dcm4chee-arc/db:/var/lib/postgresql/data
   arc:
-    image: dcm4che/dcm4chee-arc-psql:5.29.0
+    image: dcm4che/dcm4chee-arc-psql:5.33.1
     logging:
       driver: json-file
       options:
         max-size: "10m"
+    security_opt:
+     - seccomp:unconfined
     ports:
       - "8080:8080"
       - "8443:8443"
@@ -41,7 +47,7 @@ services:
       - "12575:12575"
     env_file: docker-compose.env
     environment:
-      WILDFLY_CHOWN: /opt/wildfly/standalone /storage
+      WILDFLY_CHOWN: /storage
       WILDFLY_WAIT_FOR: ldap:389 db:5432
     depends_on:
       - ldap
@@ -49,8 +55,8 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-      - ~/dcm4chee-arc/wildfly:/opt/wildfly/standalone
-      - ~/dcm4chee-arc/storage:/storage
+      - C:/dcm4chee/dcm4chee-arc/wildfly:/opt/wildfly/standalone
+      - C:/dcm4chee/dcm4chee-arc/storage:/storage
   ohif_viewer:
     build:
       # Project root
@@ -71,3 +77,5 @@ services:
       - '443:443' # SSL
       - '80:80' # Web
     restart: on-failure
+volumes:
+    db:
