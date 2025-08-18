@@ -5,31 +5,27 @@
 services:
   # Exposed server that's handling incoming web requests
   ohif_viewer:
-    # build:
-      # # Project root
-      # context: ./../../../../
-      # # Relative to context
-      # dockerfile: platform/app/.recipes/Nginx-Orthanc/dockerfile
-      # args:
-        # - QUICK_BUILD=true
-    image: webapp:v3.11.0-beta.56 #ohif/app:v3.11.0-beta.56 #latest #
+    build:
+      # Project root
+      context: ./../../../../
+      # Relative to context
+      dockerfile: platform/app/.recipes/Nginx-Orthanc/dockerfile
+      args:
+        - QUICK_BUILD=true
+    image: webapp:v3.11.0-beta.56
     container_name: ohif_iCRco
     environment:
       - APP_CONFIG=config/docker-nginx-orthanc.js  
-      # - DOCKER_BUILDKIT=1
+      - DOCKER_BUILDKIT=1
       - REACT_APP_TITLE=iCRco Viewer
     volumes:
       # Nginx config (optional override)
-      - C:/ohif/Viewers/platform/app/.recipes/Nginx-Orthanc/config/nginx.conf:/etc/nginx/nginx.conf:rw
+      - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
       # Override the config at runtime if needed (the build already includes it)
-      - C:/ohif/Viewers/platform/app/.recipes/Nginx-Orthanc/config/docker-nginx-orthanc.js:/var/www/html/app-config.js:ro
-      # - C:/ohif/Viewers/platform/app/.recipes/Nginx-Orthanc/logo/icrcologo.png:/u/var/www/html/assets/icrcologo.png
-      # - ./config/custom-index.html:/var/www/html/index.html:ro
+      - ./config/docker-nginx-orthanc.js:/var/www/html/app-config.js:ro
+      - ./config/custom-index.html:/var/www/html/index.html:ro
       # Logs
-      - C:/ohif/Viewers/platform/app/.recipes/Nginx-Orthanc/config/logs/nginx:/var/logs/nginx:rw
-    # command: >
-      # sh -c "sh -c mkdir -p /var/run && chmod 775 /var/run &&
-             # nginx -g 'daemon off;'"
+      - ./logs/nginx:/var/log/nginx
     ports:
       - '443:443' # SSL
       - '80:80' # Web
@@ -43,7 +39,7 @@ services:
   orthanc:
     image: jodogne/orthanc-plugins
     hostname: orthanc
-    container_name: orthanc
+    container_name: orthancPACS
     volumes:
       # Config
       - ./config/orthanc.json:/etc/orthanc/orthanc.json:ro
@@ -58,6 +54,4 @@ services:
 
 networks:
   pacs:
-    name: pacs
-    driver: bridge
-    # external: true
+    external: true

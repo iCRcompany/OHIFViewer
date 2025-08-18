@@ -1,22 +1,26 @@
+# syntax=docker/dockerfile:1
 # Stage 1: Build the application
 FROM node:20.18.1-slim as builder
 
 # Setup the working directory
 WORKDIR /usr/src/app
 
-# Copy all source code first (OHIF needs all files for proper build)
+# Copy root package files first for better layer caching
+COPY package.json yarn.lock ./
+
+# Copy all source code (simpler and more reliable for OHIF)
 COPY ./ ./
 
-# Copy the config file to where webpack expects it during build
-COPY platform/app/.recipes/Nginx-Orthanc/config/docker-nginx-orthanc.js ./platform/app/public/config/docker-nginx-orthanc.js
-
-# OPTIMIZATION: Configure yarn and install with cache mount
+# Install dependencies with cache mount
 RUN --mount=type=cache,target=/root/.yarn \
     yarn config set workspaces-experimental true && \
     yarn install --frozen-lockfile --cache-folder /root/.yarn --network-timeout 300000
 
+# Source code is already copied above
+
 # Set environment variables
 ENV APP_CONFIG=config/docker-nginx-orthanc.js
+ENV NODE_ENV=production
 
 # Support QUICK_BUILD from docker-compose
 ARG QUICK_BUILD=false
@@ -41,7 +45,7 @@ RUN mkdir -p /var/log/nginx /var/www/html && \
 # Copy build output to the correct nginx directory
 COPY --from=builder /usr/src/app/platform/app/dist /var/www/html
 
-# Create a default nginx config
+# Create a default nginx config if one isn't mounted
 RUN echo 'server { \
     listen 80; \
     listen 443 ssl; \

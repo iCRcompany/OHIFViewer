@@ -1,0 +1,45 @@
+# syntax=docker/dockerfile:1
+# Stage 1: Build the application
+FROM node:20.18.1-slim as builder
+
+# Setup the working directory
+WORKDIR /usr/src/app
+
+# Copy all source code first (OHIF needs preinstall.js and other files)
+COPY ./ ./
+
+# OPTIMIZATION: Configure yarn and install with cache mount
+RUN --mount=type=cache,target=/root/.yarn \
+    yarn config set workspaces-experimental true && \
+    yarn install --frozen-lockfile --cache-folder /root/.yarn --network-timeout 300000
+
+# Set environment variables
+ENV APP_CONFIG=config/docker-nginx-orthanc.js
+
+# Support QUICK_BUILD from docker-compose
+ARG QUICK_BUILD=false
+ENV QUICK_BUILD=${QUICK_BUILD}
+
+# Build the application
+RUN if [ "$QUICK_BUILD" = "true" ]; then \
+        echo "Quick build enabled" && \
+        yarn run build:dev 2>/dev/null || yarn run build; \
+    else \
+        echo "Full production build" && \
+        yarn run build; \
+    fi
+
+# Stage 2: Production nginx server
+FROM nginx:alpine
+
+# Create directories
+RUN mkdir -p /var/log/nginx /var/www/html
+
+# Copy build output
+COPY --from=builder /usr/src/app/platform/app/dist /var/www/html
+
+# Expose ports
+EXPOSE 80 443
+
+# Start nginx
+CMD ["nginx", "-g", "daemon off;"]
