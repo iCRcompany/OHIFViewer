@@ -11,9 +11,9 @@ window.config = {
   whiteLabeling: {
     createLogoComponentFn: function (React) {
       return React.createElement('img', {
-        src: '/ohif/assets/clarity-logo.png',
-        style: { height: '32px' },
-        alt: 'Clarity-OHIF Viewer',
+        src: '/ohif/assets/icrco-logo.png',
+        style: { height: '36px' },
+        alt: 'iCRco',
       });
     },
   },
