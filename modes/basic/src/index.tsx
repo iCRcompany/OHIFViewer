@@ -303,8 +303,25 @@ export const modeInstance = {
   isValidMode,
   routes: [basicRoute],
   extensions: extensionDependencies,
-  // Default protocol gets self-registered by default in the init
-  hangingProtocol: 'default',
+  hangingProtocol: [
+    'default',
+    '@ohif/hpCompare',
+    '@ohif/hpMammo',
+    '@ohif/hpScale',
+    '@ohif/mnGrid',
+    '@ohif/mnGrid8',
+    '@icrco/hpModalityCT',
+    '@icrco/hpModalityMR',
+    '@icrco/hpModalityUS',
+    '@icrco/hpModalityNM',
+    '@icrco/hpModalityPT',
+    '@icrco/hpModalityCR',
+    '@icrco/hpModalityDX',
+    '@icrco/hpModalityDR',
+    '@icrco/hpModalityXA',
+    '@icrco/hpModalityRF',
+    '@icrco/hpModalityES',
+  ],
   // Order is important in sop class handlers when two handlers both use
   // the same sop class under different situations.  In that case, the more
   // general handler needs to come last.  For this case, the dicomvideo must
