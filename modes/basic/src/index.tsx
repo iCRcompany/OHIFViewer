@@ -78,6 +78,10 @@ export const segmentation = {
   viewport: '@ohif/extension-cornerstone-dicom-seg.viewportModule.dicom-seg',
 };
 
+export const reportEditor = {
+  panel: '@icrco/extension-report-editor.panelModule.reportEditor',
+};
+
 export const extensionDependencies = {
   // Can derive the versions at least process.env.from npm_package_version
   '@ohif/extension-default': '^3.0.0',
@@ -88,6 +92,7 @@ export const extensionDependencies = {
   '@ohif/extension-cornerstone-dicom-rt': '^3.0.0',
   '@ohif/extension-dicom-pdf': '^3.0.1',
   '@ohif/extension-dicom-video': '^3.0.1',
+  '@icrco/extension-report-editor': '^0.1.0',
 };
 
 export const sopClassHandlers = [
@@ -263,7 +268,7 @@ export const basicLayout = {
     // before the sidebars resolve.
     leftPanels: [ohif.thumbnailList],
     leftPanelResizable: true,
-    rightPanels: [cornerstone.segmentation, cornerstone.measurements],
+    rightPanels: [cornerstone.segmentation, cornerstone.measurements, reportEditor.panel],
     rightPanelClosed: true,
     rightPanelResizable: true,
     viewports: [

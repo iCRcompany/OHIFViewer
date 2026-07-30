@@ -2,7 +2,7 @@
 window.config = {
   routerBasename: '/ohif',
   showStudyList: true,
-  extensions: [],
+  extensions: ['@icrco/extension-report-editor'],
   modes: [],
   showWarningMessageForCrossOrigin: true,
   showCPUFallbackMessage: true,
