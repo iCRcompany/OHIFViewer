@@ -11,6 +11,7 @@ import {
   extensionDependencies as basicDependencies,
   mode as basicMode,
   modeInstance as basicModeInstance,
+  reportEditor,
 } from '@ohif/mode-basic';
 
 export const tracked = {
@@ -34,7 +35,7 @@ export const longitudinalInstance = {
     // `leftPanels` / `rightPanels` customizations so `mode` phase
     // blocks and global customizations can modify them.
     leftPanels: [tracked.thumbnailList],
-    rightPanels: [cornerstone.segmentation, tracked.measurements],
+    rightPanels: [cornerstone.segmentation, tracked.measurements, reportEditor.panel],
     viewports: [
       {
         namespace: tracked.viewport,
