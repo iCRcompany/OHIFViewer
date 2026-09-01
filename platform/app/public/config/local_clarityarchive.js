@@ -3,7 +3,6 @@ window.config = {
   routerBasename: '/ohif',
   showStudyList: true,
   extensions: [
-    '@icrco/extension-report-editor',
     '@ohif/extension-dicom-pdf',
     '@ohif/extension-cornerstone-dicom-sr',
     '@ohif/extension-cornerstone-dicom-seg',
