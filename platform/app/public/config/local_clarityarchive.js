@@ -1,3 +1,5 @@
+const origin = window.location.origin;
+
 /** @type {AppTypes.Config} */
 window.config = {
   routerBasename: '/ohif',
@@ -25,7 +27,7 @@ window.config = {
   oidc: [
     {
       // ~ REQUIRED
-      authority: 'https://claritypacs.internal/keycloak/realms/dcm4che',
+      authority: `${origin}/keycloak/realms/dcm4che`,
       client_id: 'ohif-viewer',
       redirect_uri: '/callback',
       response_type: 'code', // PKCE, handled automatically by oidc-client-ts
@@ -44,9 +46,9 @@ window.config = {
       configuration: {
         friendlyName: 'Clarity PACS',
         name: 'clarityarchive',
-        wadoUriRoot: 'https://claritypacs.internal/dcm4chee-arc/aets/clarityarchive/wado',
-        qidoRoot: 'https://claritypacs.internal/dcm4chee-arc/aets/clarityarchive/rs',
-        wadoRoot: 'https://claritypacs.internal/dcm4chee-arc/aets/clarityarchive/rs',
+        wadoUriRoot: `${origin}/dcm4chee-arc/aets/clarityarchive/wado`,
+        qidoRoot: `${origin}/dcm4chee-arc/aets/clarityarchive/rs`,
+        wadoRoot: `${origin}/dcm4chee-arc/aets/clarityarchive/rs`,
         qidoSupportsIncludeField: true,
         imageRendering: 'wadors',
         enableStudyLazyLoad: true,
